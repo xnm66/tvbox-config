@@ -1,1 +1,81 @@
-tvbox.json - TVBOX配置数据
+{
+  "sites": [
+    {
+      "key": "csp_AppYs",
+      "name": "APP影视",
+      "type": 3,
+      "api": "csp_AppYs",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://gitcode.net/qq/mao/-/raw/master/JS/appys.js"
+    },
+    {
+      "key": "csp_BiliBili",
+      "name": "哔哩哔哩",
+      "type": 3,
+      "api": "csp_BiliBili",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 1,
+      "ext": "https://gitcode.net/qq/mao/-/raw/master/JS/bilibili.js"
+    },
+    {
+      "key": "csp_Normal",
+      "name": "普通源",
+      "type": 3,
+      "api": "csp_Normal",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_DrPy",
+      "name": "道长资源",
+      "type": 3,
+      "api": "csp_DrPy",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://gitcode.net/qq/mao/-/raw/master/JS/drpy.js"
+    }
+  ],
+  "parses": [
+    {
+      "name": "Json解析",
+      "type": 1,
+      "url": "https://jihulab.com/jxxgyz/xs/-/raw/master/parse.json"
+    },
+    {
+      "name": "海阔解析",
+      "type": 1,
+      "url": "https://gitcode.net/qq/mao/-/raw/master/JS/hkParse.js"
+    },
+    {
+      "name": "俊佬解析",
+      "type": 1,
+      "url": "https://gitcode.net/qq/mao/-/raw/master/JS/jlParse.js"
+    }
+  ],
+  "lives": [
+    {
+      "name": "直播频道",
+      "type": 1,
+      "url": "https://jihulab.com/jxxgyz/xs/-/raw/master/live.txt"
+    }
+  ],
+  "flags": [
+    "js",
+    "解析",
+    "官源"
+  ],
+  "info": {
+    "name": "GitHub智能TVBOX服务",
+    "version": "2.0.0",
+    "platform": "GitHub Pages",
+    "updateTime": "2024-01-20",
+    "author": "GitHub部署",
+    "tip": "同一网址智能识别：浏览器显示页面，TVBOX获取配置",
+    "website": "https://github.com/你的用户名/tvbox-config"
+  }
+}
