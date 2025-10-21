@@ -1,2 +1,13 @@
-# tvbox-config
-TVBOX智能服务 - GitHub Pages部署
+# TVBOX智能服务 - GitHub Pages部署
+
+## 项目介绍
+这是一个基于GitHub Pages的TVBOX智能服务，实现同一网址智能识别浏览器和TVBOX客户端。
+
+## 功能特点
+- 🎯 智能识别浏览器与TVBOX客户端
+- 🌐 同一网址，不同响应
+- 📱 移动端优化
+- ⚡ 快速加载
+- 🆓 完全免费
+
+## 访问地址
