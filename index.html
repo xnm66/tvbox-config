@@ -1,1 +1,183 @@
-index.html - 智能引导页面
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TVBOX资源服务 - 智能接口</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 TVBOX资源服务</h1>
+            <p class="subtitle">同一网址，智能识别浏览器与TVBOX</p>
+        </header>
+        
+        <div class="card">
+            <h2>✅ 服务状态正常</h2>
+            <p>基于 GitHub Pages 的智能TVBOX服务</p>
+        </div>
+
+        <div class="card">
+            <h3>📱 TVBOX配置地址</h3>
+            <p>复制此地址到TVBOX、影视仓等应用：</p>
+            <div class="url-box" id="configUrl">
+                <span id="urlText">加载中...</span>
+                <button onclick="copyUrl()" class="copy-btn">复制</button>
+            </div>
+            <p class="tip">TVBOX访问此地址将自动获取JSON配置数据</p>
+        </div>
+
+        <div class="card">
+            <h3>🔧 使用指南</h3>
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">1️⃣</div>
+                    <h4>复制地址</h4>
+                    <p>点击上方复制按钮</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">2️⃣</div>
+                    <h4>配置应用</h4>
+                    <p>在TVBOX中粘贴地址</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">3️⃣</div>
+                    <h4>开始使用</h4>
+                    <p>保存并加载配置</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🎯 智能识别原理</h3>
+            <div class="tech-info">
+                <div class="tech-item">
+                    <span class="tech-label">浏览器访问</span>
+                    <span class="tech-value">→ 显示此引导页面</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-label">TVBOX访问</span>
+                    <span class="tech-value">→ 返回JSON配置数据</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-label">识别方式</span>
+                    <span class="tech-value">User-Agent检测 + 自动跳转</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📊 调试信息</h3>
+            <div class="debug-info">
+                <div class="debug-item">
+                    <strong>User-Agent:</strong> 
+                    <span id="userAgent"></span>
+                </div>
+                <div class="debug-item">
+                    <strong>识别结果:</strong> 
+                    <span id="detectResult">检测中...</span>
+                </div>
+                <div class="debug-item">
+                    <strong>服务平台:</strong> 
+                    <span>GitHub Pages</span>
+                </div>
+                <div class="debug-item">
+                    <strong>最后更新:</strong> 
+                    <span id="updateTime"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card links">
+            <h3>🔗 快速链接</h3>
+            <div class="link-buttons">
+                <a href="./tvbox.json" target="_blank" class="link-btn">📄 直接查看JSON</a>
+                <a href="https://github.com/你的用户名/tvbox-config" target="_blank" class="link-btn">💾 项目源码</a>
+                <button onclick="testTVBOX()" class="link-btn">🧪 模拟TVBOX测试</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 TVBOX智能服务 | 基于 GitHub Pages</p>
+    </footer>
+
+    <script>
+        // 智能客户端检测
+        function detectClient() {
+            const ua = navigator.userAgent.toLowerCase();
+            const params = new URLSearchParams(window.location.search);
+            
+            // TVBOX识别条件
+            const isTVBOX = 
+                ua.includes('okhttp') ||
+                ua.includes('tvbox') ||
+                ua.includes('dart') ||
+                ua.includes('quan') ||
+                ua.includes('catvod') ||
+                params.get('type') === 'json' ||
+                params.get('tvbox') === 'true' ||
+                params.get('source') === 'tvbox';
+
+            console.log('UserAgent:', ua);
+            console.log('识别为TVBOX:', isTVBOX);
+
+            if (isTVBOX) {
+                // TVBOX访问 - 跳转到JSON文件
+                window.location.href = './tvbox.json';
+                return true;
+            }
+            return false;
+        }
+
+        // 初始化页面
+        function initPage() {
+            // 显示当前网址
+            const currentUrl = window.location.href.split('?')[0];
+            document.getElementById('urlText').textContent = currentUrl;
+            
+            // 显示UserAgent信息
+            const ua = navigator.userAgent;
+            document.getElementById('userAgent').textContent = 
+                ua.length > 80 ? ua.substring(0, 80) + '...' : ua;
+            
+            // 显示检测结果
+            const isTVBOX = detectClient();
+            document.getElementById('detectResult').textContent = 
+                isTVBOX ? 'TVBOX客户端（已跳转）' : '浏览器';
+            
+            // 显示更新时间
+            document.getElementById('updateTime').textContent = 
+                new Date().toLocaleString();
+        }
+
+        // 复制网址
+        function copyUrl() {
+            const text = document.getElementById('urlText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ 配置地址已复制到剪贴板！');
+            }).catch(err => {
+                console.error('复制失败:', err);
+                // 备用复制方案
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('✅ 配置地址已复制！');
+            });
+        }
+
+        // 模拟TVBOX测试
+        function testTVBOX() {
+            window.open('./tvbox.json', '_blank');
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', initPage);
+    </script>
+</body>
+</html>
