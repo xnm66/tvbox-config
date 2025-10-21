@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>TVBOX智能重定向</title>
+    <script>
+        // 智能客户端识别和重定向
+        function redirectTVBOX() {
+            const ua = navigator.userAgent.toLowerCase();
+            const params = new URLSearchParams(window.location.search);
+            const pathname = window.location.pathname;
+            
+            console.log('=== 重定向调试信息 ===');
+            console.log('访问路径:', pathname);
+            console.log('UserAgent:', ua);
+            console.log('URL参数:', params.toString());
+            
+            // TVBOX识别条件
+            const isTVBOX = 
+                ua.includes('okhttp') ||           // TVBOX常用
+                ua.includes('tvbox') ||            // TVBOX标识
+                ua.includes('dart') ||             // Flutter应用
+                ua.includes('quan') ||             // 猫等应用
+                ua.includes('catvod') ||           // CATVOD
+                params.get('type') === 'json' ||   // 指定JSON类型
+                params.get('tvbox') === 'true' ||  // TVBOX标识
+                params.get('source') === 'tvbox' || // 来源标识
+                pathname.includes('.json') ||      // 直接请求JSON
+                pathname.includes('/api') ||       // API路径
+                pathname.includes('/config') ||    // 配置路径
+                pathname.includes('/json');        // JSON路径
+            
+            console.log('识别为TVBOX:', isTVBOX);
+            
+            if (isTVBOX) {
+                // TVBOX访问 - 直接返回JSON数据
+                fetch('../tvbox.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        // 设置JSON响应头
+                        const jsonStr = JSON.stringify(data, null, 2);
+                        
+                        // 创建下载响应（TVBOX会识别为配置文件）
+                        const blob = new Blob([jsonStr], { type: 'application/json' });
+                        const url = window.URL.createObjectURL(blob);
+                        
+                        // 对于TVBOX，直接重定向到JSON文件
+                        window.location.href = '../tvbox.json';
+                    })
+                    .catch(error => {
+                        console.error('加载JSON失败:', error);
+                        // 失败时直接重定向
+                        window.location.href = '../tvbox.json';
+                    });
+            } else {
+                // 浏览器访问 - 跳转到主页
+                window.location.href = '../';
+            }
+        }
+        
+        // 页面加载后立即执行重定向
+        window.addEventListener('load', redirectTVBOX);
+    </script>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .loading {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .debug {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            text-align: left;
+            max-width: 600px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">🎬 TVBOX智能重定向</div>
+    <div class="spinner"></div>
+    <p>正在检测客户端类型并跳转...</p>
+    
+    <div class="debug">
+        <strong>调试信息：</strong><br>
+        <span id="pathInfo">路径: 加载中...</span><br>
+        <span id="uaInfo">UserAgent: 加载中...</span><br>
+        <span id="redirectInfo">跳转目标: 检测中...</span>
+    </div>
+
+    <script>
+        // 显示调试信息
+        document.getElementById('pathInfo').textContent = '路径: ' + window.location.pathname;
+        document.getElementById('uaInfo').textContent = 'UserAgent: ' + 
+            (navigator.userAgent.length > 100 ? 
+             navigator.userAgent.substring(0, 100) + '...' : 
+             navigator.userAgent);
+    </script>
+</body>
+</html>
